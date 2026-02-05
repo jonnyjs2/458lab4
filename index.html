@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Seattle Fires Map Tiles</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.18.1/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.18.1/mapbox-gl.js"></script>
+<style>
+body { margin: 0; padding: 0; }
+#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+#menu {
+  position: absolute;
+  background: white;
+  padding: 10px;
+  font-family: sans-serif;
+  z-index: 1;
+  top: 10px;
+  left: 10px;
+  border-radius: 4px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+}
+</style>
+</head>
+<body>
+
+<div id="menu">
+  <strong>Toggle Layers:</strong><br>
+  <input type="checkbox" id="tileset1"> Basemap Tiles<br>
+  <input type="checkbox" id="tileset2"> Fires<br>
+  <input type="checkbox" id="tileset3"> Basemap + Fires<br>
+  <input type="checkbox" id="tileset4"> Themed Map<br>
+</div>
+
+<div id="map"></div>
+
+<script>
+mapboxgl.accessToken = 'pk.eyJ1Ijoiam9ubnlqczIiLCJhIjoiY21oZG56a3h5MDUybzJscHU5dDlveHEyMyJ9.Zj4MO5kQbqLf6QDwWWTs2A';
+
+const map = new mapboxgl.Map({
+    container: 'map',
+    center: [-122.3321, 47.6062],
+    zoom: 11,
+    style: 'mapbox://styles/mapbox/light-v11'
+});
+
+const scale = new mapboxgl.ScaleControl({ maxWidth: 200, unit: 'imperial' });
+map.addControl(scale);
+
+function addRasterLayer(id, path) {
+    map.addSource(id + '-tiles', {
+        type: 'raster',
+        tiles: [path],
+        tileSize: 256,
+        attribution: 'Map tiles designed by Jonny Sung'
+    });
+
+    map.addLayer({
+        id: id,
+        type: 'raster',
+        source: id + '-tiles',
+        layout: { 'visibility': 'none' }
+    });
+}
+
+map.on('load', () => {
+    addRasterLayer('tileset1', 'assets/tileset_1/{z}/{x}/{y}.png');
+    addRasterLayer('tileset2', 'assets/tileset_2/{z}/{x}/{y}.png');
+    addRasterLayer('tileset3', 'assets/tileset_3/{z}/{x}/{y}.png');
+    addRasterLayer('tileset4', 'assets/tileset_4/{z}/{x}/{y}.png');
+});
+
+['tileset1','tileset2','tileset3','tileset4'].forEach(id => {
+    document.getElementById(id).addEventListener('change', (e) => {
+        map.setLayoutProperty(id, 'visibility', e.target.checked ? 'visible' : 'none');
+    });
+});
+</script>
+
+</body>
+</html>
