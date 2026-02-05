@@ -2,7 +2,7 @@
 
 ## Web Map URL
 You can view the interactive map here:  
-https://[your_github_username].github.io/[your_repository_name]  
+https://jonnyjs2.github.io/458lab4/index.html 
 
 ## Screenshots of Tile Layers
 | Layer | Screenshot |
